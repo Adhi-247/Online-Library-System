@@ -1,0 +1,71 @@
+<div class="container">
+  <h1>📚 Book Management System</h1>
+
+  <!-- Add New Book Form -->
+  <div class="form-section">
+    <h2>Add New Book</h2>
+    <div class="form-group">
+      <input placeholder="Title" [(ngModel)]="newBook.title">
+      <input placeholder="Author" [(ngModel)]="newBook.author">
+      <input placeholder="ISBN" [(ngModel)]="newBook.isbn">
+      <input type="date" [(ngModel)]="newBook.publicationDate">
+      <button class="btn-add" (click)="addBook()">Add Book</button>
+    </div>
+  </div>
+
+  <!-- Edit Book Form (shown when editing) -->
+  <div class="form-section edit-form" *ngIf="editingBook">
+    <h2>Edit Book</h2>
+    <div class="form-group">
+      <input placeholder="Title" [(ngModel)]="editingBook.title">
+      <input placeholder="Author" [(ngModel)]="editingBook.author">
+      <input placeholder="ISBN" [(ngModel)]="editingBook.isbn">
+      <input type="date" [(ngModel)]="editingBook.publicationDate">
+      <button class="btn-update" (click)="updateBook()">Update</button>
+      <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Books List -->
+  <div class="books-section">
+    <h2>Books List</h2>
+    
+    <!-- Error Message -->
+    <p *ngIf="errorMessage" class="error-message" style="color: red; padding: 10px; background: #ffe0e0; border-radius: 5px;">
+      ⚠️ {{ errorMessage }}
+      <button (click)="loadBooks()" style="margin-left: 10px;">Retry</button>
+    </p>
+    
+    <!-- Loading -->
+    <p *ngIf="loading" style="color: #666;">Loading books...</p>
+    
+    <div class="books-table" *ngIf="books.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Publication Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let book of books">
+            <td>{{ book.id }}</td>
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td>{{ book.isbn }}</td>
+            <td>{{ book.publicationDate | date:'yyyy-MM-dd' }}</td>
+            <td class="actions">
+              <button class="btn-edit" (click)="editBook(book)">Edit</button>
+              <button class="btn-delete" (click)="deleteBook(book.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p *ngIf="books.length === 0 && !loading && !errorMessage" class="no-books">No books available. Add a new book above!</p>
+  </div>
+</div>
