@@ -17,7 +17,7 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="flex gap-2">
+    <nav class="flex gap-2 items-center">
       <a routerLink="/" 
          class="px-4 py-2 text-sm font-medium text-blue-100 hover:text-white hover:bg-white/10 rounded-lg transition backdrop-blur">
         Home
@@ -26,14 +26,31 @@
          class="px-4 py-2 text-sm font-medium text-blue-100 hover:text-white hover:bg-white/10 rounded-lg transition backdrop-blur">
         Catalog
       </a>
-      <a routerLink="/login" 
-         class="px-4 py-2 text-sm font-medium text-blue-100 hover:text-white hover:bg-white/10 rounded-lg transition backdrop-blur">
-        Login
-      </a>
-      <a routerLink="/dashboard" 
-         class="px-4 py-2 text-sm font-medium bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:shadow-lg hover:scale-105 transition">
-        Dashboard
-      </a>
+
+      <!-- Not Logged In -->
+      <ng-container *ngIf="!currentUser">
+        <a routerLink="/login" 
+           class="px-4 py-2 text-sm font-medium text-blue-100 hover:text-white hover:bg-white/10 rounded-lg transition backdrop-blur">
+          Login
+        </a>
+      </ng-container>
+
+      <!-- Logged In -->
+      <ng-container *ngIf="currentUser">
+        <div class="flex items-center gap-3 ml-2">
+          <div class="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg">
+            <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
+              {{ currentUser.fullName.charAt(0).toUpperCase() }}
+            </div>
+            <span class="text-sm text-blue-100">{{ currentUser.fullName }}</span>
+          </div>
+          <button 
+            (click)="logout()"
+            class="px-4 py-2 text-sm font-medium text-red-300 hover:text-white hover:bg-red-500/20 rounded-lg transition">
+            Logout
+          </button>
+        </div>
+      </ng-container>
     </nav>
 
   </div>

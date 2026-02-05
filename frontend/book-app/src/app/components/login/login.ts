@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,17 +12,118 @@ import { Router } from '@angular/router';
 })
 export class Login {
 
-  username = '';
+  // Login form
+  email = '';
   password = '';
+  
+  // Register form
+  fullName = '';
+  registerEmail = '';
+  registerPassword = '';
+  confirmPassword = '';
+  
+  // UI state
+  isLoginMode = true;
+  isLoading = false;
+  errorMessage = '';
+  successMessage = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
-  onSubmit() {
-    if (this.username === 'admin' && this.password === 'admin') {
-      alert('Login Successful');
-      this.router.navigate(['/dashboard']);
-    } else {
-      alert('Invalid Credentials');
+  toggleMode() {
+    this.isLoginMode = !this.isLoginMode;
+    this.clearMessages();
+    this.clearForms();
+  }
+
+  clearMessages() {
+    this.errorMessage = '';
+    this.successMessage = '';
+  }
+
+  clearForms() {
+    this.email = '';
+    this.password = '';
+    this.fullName = '';
+    this.registerEmail = '';
+    this.registerPassword = '';
+    this.confirmPassword = '';
+  }
+
+  onLogin() {
+    this.clearMessages();
+    
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Please fill in all fields';
+      return;
     }
+
+    this.isLoading = true;
+    
+    this.authService.login({ email: this.email, password: this.password })
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            this.successMessage = 'Login successful! Redirecting...';
+            setTimeout(() => {
+              this.router.navigate(['/']);
+            }, 1500);
+          } else {
+            this.errorMessage = response.message;
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.errorMessage = error.error?.message || 'Login failed. Please try again.';
+        }
+      });
+  }
+
+  onRegister() {
+    this.clearMessages();
+    
+    if (!this.fullName || !this.registerEmail || !this.registerPassword || !this.confirmPassword) {
+      this.errorMessage = 'Please fill in all fields';
+      return;
+    }
+
+    if (this.registerPassword !== this.confirmPassword) {
+      this.errorMessage = 'Passwords do not match';
+      return;
+    }
+
+    if (this.registerPassword.length < 6) {
+      this.errorMessage = 'Password must be at least 6 characters';
+      return;
+    }
+
+    this.isLoading = true;
+    
+    this.authService.register({
+      fullName: this.fullName,
+      email: this.registerEmail,
+      password: this.registerPassword
+    }).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.success) {
+          this.successMessage = 'Registration successful! Redirecting...';
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 1500);
+        } else {
+          this.errorMessage = response.message;
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+      }
+    });
   }
 }
+
