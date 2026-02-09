@@ -17,9 +17,22 @@ public class BooksController : ControllerBase
 
     // GET: api/Books
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+    public async Task<ActionResult<IEnumerable<Book>>> GetBooks([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        return await _context.Books.Include(b => b.Category).ToListAsync();
+        var skip = (page - 1) * pageSize;
+        return await _context.Books
+            .Include(b => b.Category)
+            .AsNoTracking()
+            .Skip(skip)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+    // GET: api/Books/count
+    [HttpGet("count")]
+    public async Task<ActionResult<int>> GetBooksCount()
+    {
+        return await _context.Books.CountAsync();
     }
 
     // GET: api/Books/5
@@ -28,6 +41,7 @@ public class BooksController : ControllerBase
     {
         var book = await _context.Books
             .Include(b => b.Category)
+            .AsNoTracking()
             .FirstOrDefaultAsync(b => b.Id == id);
 
         if (book == null)
@@ -39,11 +53,15 @@ public class BooksController : ControllerBase
 
     // GET: api/Books/category/5
     [HttpGet("category/{categoryId}")]
-    public async Task<ActionResult<IEnumerable<Book>>> GetBooksByCategory(int categoryId)
+    public async Task<ActionResult<IEnumerable<Book>>> GetBooksByCategory(int categoryId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
+        var skip = (page - 1) * pageSize;
         return await _context.Books
             .Where(b => b.CategoryId == categoryId)
             .Include(b => b.Category)
+            .AsNoTracking()
+            .Skip(skip)
+            .Take(pageSize)
             .ToListAsync();
     }
 
@@ -59,9 +77,11 @@ public class BooksController : ControllerBase
         var lowercaseQuery = query.ToLower();
         return await _context.Books
             .Include(b => b.Category)
+            .AsNoTracking()
             .Where(b => b.Title.ToLower().Contains(lowercaseQuery) ||
                        b.Author.ToLower().Contains(lowercaseQuery) ||
                        b.Isbn.ToLower().Contains(lowercaseQuery))
+            .Take(50)
             .ToListAsync();
     }
 

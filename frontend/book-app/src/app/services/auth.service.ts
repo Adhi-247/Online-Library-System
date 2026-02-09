@@ -71,10 +71,26 @@ export class AuthService {
       );
   }
 
+  adminLogin(loginDto: LoginDto): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/admin/login`, loginDto)
+      .pipe(
+        tap(response => {
+          if (response.success && response.token && response.user) {
+            this.storeAuthData(response.token, response.user);
+          }
+        })
+      );
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.currentUserSubject.next(null);
+  }
+
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user?.role === 'Admin';
   }
 
   private storeAuthData(token: string, user: User): void {

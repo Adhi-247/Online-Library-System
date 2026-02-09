@@ -1,22 +1,38 @@
 <div class="group bg-white/90 backdrop-blur-xl rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-3 overflow-hidden border border-blue-100">
   <!-- Book Cover -->
   <div class="h-56 bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-600 flex items-center justify-center relative overflow-hidden">
-    <div class="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition"></div>
-    <span class="text-7xl relative z-10 group-hover:scale-110 transition duration-300">📖</span>
+    <img 
+      *ngIf="book?.coverImage" 
+      [src]="book.coverImage" 
+      [alt]="book.title"
+      class="w-full h-full object-cover"
+      (error)="$event.target.src='https://via.placeholder.com/300x400?text=No+Cover'"
+    />
+    <div *ngIf="!book?.coverImage" class="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition"></div>
+    <span *ngIf="!book?.coverImage" class="text-7xl relative z-10 group-hover:scale-110 transition duration-300">📖</span>
   </div>
 
   <!-- Book Info -->
   <div class="p-6">
-    <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition">
-      Clean Code
+    <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition line-clamp-2">
+      {{ book?.title || 'Unknown Title' }}
     </h3>
 
-    <p class="text-sm text-slate-500 mb-4">
-      Robert C. Martin
+    <p class="text-sm text-slate-500 mb-1">
+      {{ book?.author || 'Unknown Author' }}
     </p>
 
+    <p class="text-xs text-blue-600 mb-4">
+      {{ book?.category?.name || 'Uncategorized' }}
+    </p>
+
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-xs text-slate-600">Available: {{ book?.available || 0 }}</span>
+      <span class="text-xs text-slate-600">Pages: {{ book?.pages || 'N/A' }}</span>
+    </div>
+
     <a
-      routerLink="/book/1"
+      [routerLink]="'/book/' + book?.id"
       class="block w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-sm font-semibold px-4 py-3 rounded-xl text-center hover:shadow-lg hover:shadow-blue-500/50 hover:scale-105 transition transform"
     >
       View Details →

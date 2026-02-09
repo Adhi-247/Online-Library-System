@@ -24,6 +24,7 @@ export class Login {
   
   // UI state
   isLoginMode = true;
+  isAdminMode = false;
   isLoading = false;
   errorMessage = '';
   successMessage = '';
@@ -35,6 +36,13 @@ export class Login {
 
   toggleMode() {
     this.isLoginMode = !this.isLoginMode;
+    this.isAdminMode = false;
+    this.clearMessages();
+    this.clearForms();
+  }
+
+  toggleAdminMode() {
+    this.isAdminMode = !this.isAdminMode;
     this.clearMessages();
     this.clearForms();
   }
@@ -63,24 +71,33 @@ export class Login {
 
     this.isLoading = true;
     
-    this.authService.login({ email: this.email, password: this.password })
-      .subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          if (response.success) {
-            this.successMessage = 'Login successful! Redirecting...';
-            setTimeout(() => {
+    const loginObservable = this.isAdminMode 
+      ? this.authService.adminLogin({ email: this.email, password: this.password })
+      : this.authService.login({ email: this.email, password: this.password });
+    
+    loginObservable.subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.success) {
+          this.successMessage = this.isAdminMode 
+            ? 'Admin login successful! Redirecting to dashboard...'
+            : 'Login successful! Redirecting...';
+          setTimeout(() => {
+            if (this.isAdminMode) {
+              this.router.navigate(['/admin/dashboard']);
+            } else {
               this.router.navigate(['/']);
-            }, 1500);
-          } else {
-            this.errorMessage = response.message;
-          }
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Login failed. Please try again.';
+            }
+          }, 1500);
+        } else {
+          this.errorMessage = response.message;
         }
-      });
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.error?.message || 'Login failed. Please try again.';
+      }
+    });
   }
 
   onRegister() {

@@ -5,19 +5,26 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 using backend;
 using backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
+// --------------------
+// Services
+// --------------------
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 
-// Add PostgreSQL DbContext
 builder.Services.AddDbContext<LibraryContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
-// JWT Authentication
+// JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
 
@@ -36,28 +43,53 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(secretKey!)
+        )
     };
 });
 
-// CORS (for Angular frontend)
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngular",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --------------------
+// ADMIN TABLE SEEDING
+// --------------------
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<LibraryContext>();
+
+    context.Database.Migrate();
+
+    if (!context.Admins.Any())
+    {
+        context.Admins.Add(new Admin
+        {
+            FullName = "System Administrator",
+            Email = "admin@library.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+            CreatedAt = DateTime.UtcNow
+        });
+
+        context.SaveChanges();
+    }
+}
+
+// --------------------
+// Pipeline
+// --------------------
 app.UseHttpsRedirection();
 
-// CORS must be before MapControllers
 app.UseCors("AllowAngular");
 
 app.UseAuthentication();

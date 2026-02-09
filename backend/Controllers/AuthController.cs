@@ -22,10 +22,12 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
+        // =========================
+        // USER REGISTER
+        // =========================
         [HttpPost("register")]
         public async Task<ActionResult<AuthResponseDto>> Register(RegisterDto registerDto)
         {
-            // Check if email already exists
             if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
             {
                 return BadRequest(new AuthResponseDto
@@ -35,7 +37,6 @@ namespace backend.Controllers
                 });
             }
 
-            // Create new user
             var user = new User
             {
                 FullName = registerDto.FullName,
@@ -48,8 +49,7 @@ namespace backend.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Generate JWT token
-            var token = GenerateJwtToken(user);
+            var token = GenerateUserJwtToken(user);
 
             return Ok(new AuthResponseDto
             {
@@ -66,13 +66,17 @@ namespace backend.Controllers
             });
         }
 
+        // =========================
+        // USER LOGIN
+        // =========================
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginDto loginDto)
         {
-            // Find user by email
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 
-            if (user == null)
+            if (user == null ||
+                !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
             {
                 return Unauthorized(new AuthResponseDto
                 {
@@ -81,18 +85,7 @@ namespace backend.Controllers
                 });
             }
 
-            // Verify password
-            if (!BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
-            {
-                return Unauthorized(new AuthResponseDto
-                {
-                    Success = false,
-                    Message = "Invalid email or password"
-                });
-            }
-
-            // Generate JWT token
-            var token = GenerateJwtToken(user);
+            var token = GenerateUserJwtToken(user);
 
             return Ok(new AuthResponseDto
             {
@@ -109,16 +102,56 @@ namespace backend.Controllers
             });
         }
 
-        private string GenerateJwtToken(User user)
+        // =========================
+        // ADMIN LOGIN (SEPARATE TABLE)
+        // =========================
+        [HttpPost("admin/login")]
+        public async Task<ActionResult<AuthResponseDto>> AdminLogin(LoginDto loginDto)
+        {
+            var admin = await _context.Admins
+                .FirstOrDefaultAsync(a => a.Email == loginDto.Email);
+
+            if (admin == null ||
+                !BCrypt.Net.BCrypt.Verify(loginDto.Password, admin.Password))
+            {
+                return Unauthorized(new AuthResponseDto
+                {
+                    Success = false,
+                    Message = "Invalid admin credentials"
+                });
+            }
+
+            var token = GenerateAdminJwtToken(admin);
+
+            return Ok(new AuthResponseDto
+            {
+                Success = true,
+                Message = "Admin login successful",
+                Token = token,
+                User = new UserDto
+                {
+                    Id = admin.Id,
+                    FullName = admin.FullName,
+                    Email = admin.Email,
+                    Role = "Admin"
+                }
+            });
+        }
+
+        // =========================
+        // JWT FOR USER
+        // =========================
+        private string GenerateUserJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
-            var secretKey = jwtSettings["SecretKey"];
-            var issuer = jwtSettings["Issuer"];
-            var audience = jwtSettings["Audience"];
-            var expirationMinutes = int.Parse(jwtSettings["ExpirationInMinutes"] ?? "60");
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)
+            );
+
+            var credentials = new SigningCredentials(
+                key, SecurityAlgorithms.HmacSha256
+            );
 
             var claims = new[]
             {
@@ -129,14 +162,164 @@ namespace backend.Controllers
             };
 
             var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
+                expires: DateTime.UtcNow.AddMinutes(
+                    int.Parse(jwtSettings["ExpirationInMinutes"] ?? "60")
+                ),
                 signingCredentials: credentials
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        // =========================
+        // JWT FOR ADMIN
+        // =========================
+        private string GenerateAdminJwtToken(Admin admin)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)
+            );
+
+            var credentials = new SigningCredentials(
+                key, SecurityAlgorithms.HmacSha256
+            );
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, admin.Id.ToString()),
+                new Claim(ClaimTypes.Email, admin.Email),
+                new Claim(ClaimTypes.Name, admin.FullName),
+                new Claim(ClaimTypes.Role, "Admin")
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(
+                    int.Parse(jwtSettings["ExpirationInMinutes"] ?? "60")
+                ),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        // =========================
+        // HELPER: HASH PASSWORD (FOR TESTING ONLY - REMOVE IN PRODUCTION)
+        // =========================
+        [HttpPost("hash-password")]
+        public ActionResult<string> HashPassword([FromBody] string password)
+        {
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+            return Ok(new { 
+                plainPassword = password,
+                hashedPassword = hashedPassword 
+            });
+        }
+
+        // =========================
+        // DEBUG: CHECK ADMIN (FOR TESTING ONLY - REMOVE IN PRODUCTION)
+        // =========================
+        [HttpGet("debug/check-admin")]
+        public async Task<ActionResult> CheckAdmin([FromQuery] string email)
+        {
+            var admin = await _context.Admins
+                .FirstOrDefaultAsync(a => a.Email == email);
+
+            if (admin == null)
+            {
+                return Ok(new { 
+                    found = false,
+                    message = "No admin found with this email",
+                    email = email
+                });
+            }
+
+            return Ok(new { 
+                found = true,
+                id = admin.Id,
+                email = admin.Email,
+                fullName = admin.FullName,
+                passwordHash = admin.Password,
+                passwordHashLength = admin.Password?.Length ?? 0,
+                createdAt = admin.CreatedAt
+            });
+        }
+
+        // =========================
+        // DEBUG: TEST PASSWORD (FOR TESTING ONLY - REMOVE IN PRODUCTION)
+        // =========================
+        [HttpPost("debug/test-password")]
+        public async Task<ActionResult> TestPassword([FromBody] LoginDto loginDto)
+        {
+            var admin = await _context.Admins
+                .FirstOrDefaultAsync(a => a.Email == loginDto.Email);
+
+            if (admin == null)
+            {
+                return Ok(new { 
+                    success = false,
+                    adminFound = false,
+                    message = "Admin not found"
+                });
+            }
+
+            bool passwordMatches = BCrypt.Net.BCrypt.Verify(loginDto.Password, admin.Password);
+
+            return Ok(new { 
+                success = passwordMatches,
+                adminFound = true,
+                email = admin.Email,
+                passwordProvided = loginDto.Password,
+                passwordMatches = passwordMatches,
+                storedHash = admin.Password
+            });
+        }
+
+        // =========================
+        // ADMIN SETUP: SET ADMIN PASSWORD (FOR TESTING ONLY - REMOVE IN PRODUCTION)
+        // =========================
+        [HttpPost("admin-setup/set-password")]
+        public async Task<ActionResult> SetAdminPassword([FromBody] SetPasswordRequest request)
+        {
+            var admin = await _context.Admins
+                .FirstOrDefaultAsync(a => a.Email == request.Email);
+
+            if (admin == null)
+            {
+                return NotFound(new { 
+                    success = false,
+                    message = "Admin not found"
+                });
+            }
+
+            // Hash the password
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            admin.Password = hashedPassword;
+
+            _context.Admins.Update(admin);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { 
+                success = true,
+                message = "Admin password updated successfully",
+                email = admin.Email,
+                plainPassword = request.NewPassword,
+                hashedPassword = hashedPassword
+            });
+        }
+    }
+
+    // DTO for setting password
+    public class SetPasswordRequest
+    {
+        public string Email { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = string.Empty;
     }
 }
