@@ -53,17 +53,29 @@ export class Catalog implements OnInit {
   }
 
   loadMore() {
+    console.log('Load More button clicked, loading page:', this.currentPage + 1);
     this.loadingMore = true;
     this.currentPage++;
     this.bookService.getBooks(this.currentPage, this.pageSize).subscribe({
       next: (data) => {
-        this.books = [...this.books, ...data];
+        if (data && data.length > 0) {
+          this.books = [...this.books, ...data];
+          this.hasMore = data.length === this.pageSize;
+          console.log('Loaded more books:', data.length);
+        } else {
+          this.hasMore = false;
+          console.log('No more books to load.');
+        }
         this.loadingMore = false;
-        this.hasMore = data.length === this.pageSize;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading more books:', err);
         this.loadingMore = false;
+        this.cdr.detectChanges();
+      },
+      complete: () => {
+        console.log('Load more observable completed');
       }
     });
   }
