@@ -76,3 +76,4 @@ C:\Users\USER\Desktop\book web application\Online-Library-System\backend\bin\Deb
 C:\Users\USER\Desktop\book web application\Online-Library-System\backend\bin\Debug\net7.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\USER\Desktop\book web application\Online-Library-System\backend\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\USER\Desktop\book web application\Online-Library-System\backend\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\USER\Desktop\book web application\Online-Library-System\backend\obj\Debug\net7.0\backend.sourcelink.json
