@@ -1,50 +1,72 @@
 <!-- Header Section -->
-<div class="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-16">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <div class="inline-block mb-4">
-      <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-2xl flex items-center justify-center shadow-2xl mx-auto">
-        <span class="text-4xl">📚</span>
+<section class="bg-slate-950 text-slate-50 py-10 border-b border-slate-900">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+    <div class="space-y-3">
+      <div class="inline-flex items-center gap-2 rounded-full bg-slate-900/80 border border-slate-800 px-3 py-1 text-[11px] text-slate-300">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+        Live catalog
+      </div>
+      <div>
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight">
+          Browse the online shelves.
+        </h2>
+        <p class="mt-2 text-sm md:text-base text-slate-400 max-w-xl">
+          Explore every title currently available in your e‑library, with a clean grid inspired by modern e‑commerce stores.
+        </p>
       </div>
     </div>
-    <h2 class="text-5xl font-bold text-white drop-shadow-2xl mb-3">
-      Book Catalog
-    </h2>
-    <p class="text-blue-200 text-lg">Discover your next favorite book from our collection</p>
+
+    <!-- Simple filter/search placeholder -->
+    <div class="w-full max-w-md mt-4 md:mt-0">
+      <div class="flex items-center gap-2 rounded-2xl bg-slate-900/80 border border-slate-800 px-3 py-2">
+        <span class="text-slate-500 text-sm">🔍</span>
+        <input
+          type="text"
+          placeholder="Search by title, author or category (UI only)"
+          class="flex-1 bg-transparent text-xs md:text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none" />
+      </div>
+      <p class="mt-1 text-[11px] text-slate-500">
+        This is a visual search field. Hook it to your API when ready.
+      </p>
+    </div>
   </div>
-</div>
+</section>
 
 <!-- Books Grid -->
-<div class="bg-gradient-to-b from-slate-50 to-blue-50 py-12">
+<section class="bg-slate-950/95 pb-12 pt-6">
   <div class="max-w-7xl mx-auto px-6">
     <!-- Loading State -->
-    <div *ngIf="loading" class="text-center py-12">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      <p class="text-slate-600 mt-4">Loading books...</p>
+    <div *ngIf="loading" class="text-center py-16">
+      <div class="inline-flex items-center justify-center rounded-full h-11 w-11 border-2 border-slate-700 border-r-emerald-400 animate-spin"></div>
+      <p class="text-slate-400 mt-4 text-sm">Loading books...</p>
     </div>
 
     <!-- Error State -->
-    <div *ngIf="error" class="text-center py-12">
-      <div class="text-red-600 text-lg mb-4">⚠️</div>
-      <p class="text-red-600">{{ error }}</p>
+    <div *ngIf="error" class="text-center py-16">
+      <div class="text-rose-400 text-3xl mb-3">⚠️</div>
+      <p class="text-rose-300 text-sm">{{ error }}</p>
     </div>
 
     <!-- Books Grid -->
     <div *ngIf="!loading && !error">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
         <app-book-card *ngFor="let book of books" [book]="book"></app-book-card>
       </div>
-      
+
       <!-- Load More Button -->
       <div *ngIf="hasMore && books.length > 0" class="text-center mt-8">
-        <button 
-          (click)="loadMore()" 
+        <button
+          (click)="loadMore()"
           [disabled]="loadingMore"
-          class="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl">
-          <span *ngIf="!loadingMore">Load More Books</span>
-          <span *ngIf="loadingMore" class="flex items-center justify-center">
-            <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+          class="inline-flex items-center justify-center gap-2 px-7 py-2.5 rounded-full bg-slate-100 text-slate-950 text-sm font-medium shadow-[0_10px_40px_rgba(15,23,42,0.85)] hover:-translate-y-0.5 hover:shadow-[0_18px_60px_rgba(34,197,94,0.45)] transition disabled:opacity-60 disabled:translate-y-0 disabled:hover:shadow-none">
+          <span *ngIf="!loadingMore">Load more books</span>
+          <span *ngIf="loadingMore" class="flex items-center gap-2">
+            <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             Loading...
           </span>
@@ -53,9 +75,9 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!loading && !error && books.length === 0" class="text-center py-12">
-      <div class="text-slate-400 text-6xl mb-4">📚</div>
-      <p class="text-slate-600 text-lg">No books available at the moment.</p>
+    <div *ngIf="!loading && !error && books.length === 0" class="text-center py-16">
+      <div class="text-slate-700 text-5xl mb-3">📚</div>
+      <p class="text-slate-300 text-sm">No books available at the moment. Check back again soon.</p>
     </div>
   </div>
-</div>
+</section>

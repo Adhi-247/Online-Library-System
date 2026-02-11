@@ -1,0 +1,203 @@
+<main class="min-h-[calc(100vh-4rem)] bg-slate-950 py-10 px-4">
+  <div class="max-w-6xl mx-auto space-y-8">
+    <!-- Header -->
+    <header class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="space-y-2">
+        <p class="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-500">
+          Member dashboard
+        </p>
+        <h1 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-50">
+          Welcome back, {{ user?.fullName || 'Reader' }}.
+        </h1>
+        <p class="text-sm text-slate-400 max-w-xl">
+          Track what you are reading, see what is due soon, and pick your next book from your wishlist.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 self-start md:self-auto">
+        <div class="flex items-center gap-2 rounded-full bg-slate-900/80 border border-slate-800 px-3 py-1.5">
+          <div
+            class="h-7 w-7 rounded-full bg-gradient-to-br from-emerald-400 to-sky-400 flex items-center justify-center text-slate-950 text-xs font-semibold">
+            {{ user?.fullName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U' }}
+          </div>
+          <div class="flex flex-col leading-tight">
+            <span class="text-xs text-slate-100">
+              {{ user?.fullName || user?.email || 'Library member' }}
+            </span>
+            <span class="text-[10px] text-emerald-300/80 uppercase tracking-[0.18em]">
+              {{ user?.role || 'Member' }}
+            </span>
+          </div>
+        </div>
+        <a
+          routerLink="/account"
+          class="text-[11px] font-medium rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1.5 text-slate-200 hover:bg-slate-800 hover:border-slate-500 transition">
+          Profile & settings
+        </a>
+      </div>
+    </header>
+
+    <!-- Stats cards -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div
+        class="rounded-2xl bg-slate-900/80 border border-slate-800 shadow-[0_12px_40px_rgba(15,23,42,0.9)] p-4 flex flex-col gap-2">
+        <p class="text-[11px] text-slate-400 uppercase tracking-[0.18em]">
+          Currently borrowed
+        </p>
+        <p class="text-2xl font-semibold text-slate-50">
+          {{ stats.currentlyBorrowed }}
+        </p>
+        <p class="text-[11px] text-slate-500">
+          Make sure to return them before the due date.
+        </p>
+      </div>
+
+      <div
+        class="rounded-2xl bg-slate-900/80 border border-slate-800 shadow-[0_12px_40px_rgba(15,23,42,0.9)] p-4 flex flex-col gap-2">
+        <p class="text-[11px] text-slate-400 uppercase tracking-[0.18em]">
+          Books read
+        </p>
+        <p class="text-2xl font-semibold text-slate-50">
+          {{ stats.booksRead }}
+        </p>
+        <p class="text-[11px] text-slate-500">
+          Great progress. Keep your streak going.
+        </p>
+      </div>
+
+      <div
+        class="rounded-2xl bg-slate-900/80 border border-slate-800 shadow-[0_12px_40px_rgba(15,23,42,0.9)] p-4 flex flex-col gap-2">
+        <p class="text-[11px] text-slate-400 uppercase tracking-[0.18em]">
+          Overdue books
+        </p>
+        <p class="text-2xl font-semibold text-rose-300">
+          {{ stats.overdue }}
+        </p>
+        <p class="text-[11px] text-slate-500">
+          Return or renew these to avoid late fees.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main content: borrowed, wishlist, history -->
+    <section class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6">
+      <!-- Currently Borrowed -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
+            <span class="text-lg">📚</span>
+            <span>Currently borrowed</span>
+          </h2>
+          <a routerLink="/catalog" class="text-[11px] text-slate-400 hover:text-slate-200 transition">
+            Browse more books →
+          </a>
+        </div>
+
+        <div class="rounded-2xl bg-slate-900/80 border border-slate-800 overflow-hidden">
+          <div class="divide-y divide-slate-800">
+            <div
+              *ngFor="let item of currentlyBorrowed"
+              class="px-4 py-3 flex items-center justify-between gap-4">
+              <div class="flex flex-col">
+                <p class="text-sm font-medium text-slate-100">
+                  {{ item.title }}
+                </p>
+                <p class="text-[11px] text-slate-500">
+                  Due: {{ item.dueDate | date }}
+                </p>
+              </div>
+              <div class="flex items-center gap-3 text-[11px]">
+                <span
+                  class="px-3 py-1 rounded-full border"
+                  [ngClass]="
+                    item.status === 'Overdue'
+                      ? 'border-rose-500/50 bg-rose-500/10 text-rose-200'
+                      : 'border-emerald-500/50 bg-emerald-500/10 text-emerald-200'
+                  ">
+                  {{ item.status }}
+                </span>
+                <button
+                  class="hidden sm:inline-flex px-3 py-1 rounded-full border border-slate-700 text-[11px] text-slate-200 hover:bg-slate-800 transition">
+                  Return
+                </button>
+              </div>
+            </div>
+
+            <div
+              *ngIf="currentlyBorrowed.length === 0"
+              class="px-4 py-6 text-center text-[11px] text-slate-500">
+              You have no active loans right now.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: wishlist + history -->
+      <div class="space-y-4">
+        <!-- Wishlist -->
+        <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
+              <span class="text-lg">🔖</span>
+              <span>Wishlist</span>
+            </h3>
+          </div>
+          <div class="space-y-2 max-h-44 overflow-y-auto pr-1">
+            <div
+              *ngFor="let wish of wishlist"
+              class="flex items-center justify-between gap-3 rounded-xl bg-slate-900 px-3 py-2">
+              <div>
+                <p class="text-xs font-medium text-slate-100">
+                  {{ wish.title }}
+                </p>
+                <p class="text-[11px] text-slate-500">
+                  {{ wish.author }}
+                </p>
+              </div>
+              <button
+                class="text-[11px] rounded-full border border-slate-700 px-3 py-1 text-slate-200 hover:bg-slate-800 transition">
+                View
+              </button>
+            </div>
+
+            <p *ngIf="wishlist.length === 0" class="text-[11px] text-slate-500">
+              Your wishlist is empty. Add books from the catalog.
+            </p>
+          </div>
+        </div>
+
+        <!-- Reading history -->
+        <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
+              <span class="text-lg">📖</span>
+              <span>Reading history</span>
+            </h3>
+          </div>
+          <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+            <div
+              *ngFor="let past of history"
+              class="flex items-center justify-between gap-3 rounded-xl bg-slate-900 px-3 py-2">
+              <div>
+                <p class="text-xs font-medium text-slate-100">
+                  {{ past.title }}
+                </p>
+                <p class="text-[11px] text-slate-500">
+                  Finished on {{ past.finishedAt | date }}
+                </p>
+              </div>
+              <span class="text-[10px] text-emerald-300 uppercase tracking-[0.18em]">
+                Read
+              </span>
+            </div>
+
+            <p *ngIf="history.length === 0" class="text-[11px] text-slate-500">
+              Once you start finishing books, they will appear here.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+

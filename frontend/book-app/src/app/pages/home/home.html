@@ -1,90 +1,199 @@
 <!-- Hero Section -->
-<section class="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-24 overflow-hidden">
-  <!-- Animated background effect -->
-  <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20"></div>
-  
+<section class="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white py-24 overflow-hidden">
+  <!-- Subtle background pattern -->
+  <div
+    class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-20">
+  </div>
+
   <div class="max-w-6xl mx-auto px-6 relative z-10">
-    <div class="text-center space-y-6">
-      <div class="inline-block">
-        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-2xl flex items-center justify-center shadow-2xl mx-auto mb-6 animate-pulse">
-          <span class="text-5xl">📚</span>
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] items-center">
+      <!-- Text / CTA -->
+      <div class="space-y-8">
+        <div class="inline-flex items-center gap-2 rounded-full bg-slate-900/60 border border-slate-700/80 px-3 py-1 text-xs text-slate-300 shadow-sm">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+          Live e‑library for modern readers
+        </div>
+
+        <div class="space-y-4">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight">
+            Curate your
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-sky-300 to-cyan-300">
+              dream bookshelf
+            </span>
+            online.
+          </h1>
+          <p class="text-base md:text-lg text-slate-200/90 max-w-xl">
+            Discover, borrow and manage books in a beautiful e‑commerce‑style experience built for
+            libraries. Fast, intuitive and available from anywhere.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a
+            routerLink="/catalog"
+            class="group inline-flex items-center gap-2 rounded-2xl bg-slate-50 px-6 py-3 text-sm font-semibold text-slate-950 shadow-[0_10px_40px_rgba(15,23,42,0.65)] hover:shadow-[0_18px_60px_rgba(34,197,94,0.45)] hover:-translate-y-0.5 transition-all">
+            <span class="text-base">🔍</span>
+            <span>Browse catalog</span>
+            <span class="text-xs text-slate-500 group-hover:translate-x-0.5 transition-transform">→</span>
+          </a>
+          <a
+            routerLink="/login"
+            class="inline-flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/40 px-6 py-3 text-sm font-semibold text-slate-100 hover:bg-slate-900/70 hover:border-slate-500 transition-colors">
+            <span class="text-base">🔑</span>
+            <span>Login / Sign up</span>
+          </a>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-300/90">
+          <div class="inline-flex items-center gap-1.5">
+            <span class="h-5 w-5 rounded-full bg-gradient-to-br from-emerald-400 to-sky-400 flex items-center justify-center text-[12px] text-slate-950 font-semibold">4.9</span>
+            <span>Rated by students & readers</span>
+          </div>
+          <span class="h-4 w-px bg-slate-700/80 hidden sm:inline-block"></span>
+          <span>Instant access • No ads • Mobile‑friendly</span>
         </div>
       </div>
-      
-      <h1 class="text-5xl md:text-7xl font-bold drop-shadow-2xl">
-        Welcome to <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Online Library</span>
-      </h1>
-      
-      <p class="text-xl md:text-2xl text-blue-200 max-w-3xl mx-auto">
-        Discover thousands of books at your fingertips. Your journey to knowledge starts here.
-      </p>
-      
-      <div class="flex gap-4 justify-center pt-4">
-        <a routerLink="/catalog"
-           class="group px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold shadow-2xl hover:shadow-blue-500/50 hover:scale-105 transition transform flex items-center space-x-2">
-          <span>🔍</span>
-          <span>Browse Catalog</span>
-        </a>
-        <a routerLink="/login"
-           class="px-8 py-4 bg-white/10 backdrop-blur-xl text-white border-2 border-blue-400/50 rounded-xl font-semibold shadow-xl hover:bg-white/20 transition flex items-center space-x-2">
-          <span>🔑</span>
-          <span>Login</span>
-        </a>
+
+      <!-- Visual / Card stack -->
+      <div class="hidden md:block">
+        <div class="relative mx-auto max-w-sm">
+          <div class="absolute inset-0 blur-3xl bg-gradient-to-br from-emerald-500/20 via-sky-500/10 to-cyan-500/20 -z-10"></div>
+
+          <div class="space-y-4">
+            <div class="rounded-3xl bg-slate-900/80 border border-slate-700/80 shadow-2xl p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="text-xs font-medium text-slate-400 uppercase tracking-[0.18em]">
+                    Currently trending
+                  </p>
+                  <p class="mt-1 text-sm text-slate-100">Popular in your library</p>
+                </div>
+                <span class="inline-flex items-center rounded-full bg-emerald-500/15 text-emerald-300 px-3 py-1 text-[11px] font-medium">
+                  24 new this week
+                </span>
+              </div>
+
+              <div class="space-y-3 text-xs">
+                <div class="flex items-center justify-between rounded-2xl bg-slate-800/70 px-3 py-3">
+                  <div class="flex items-center gap-3">
+                    <div class="h-10 w-8 rounded-md bg-gradient-to-br from-emerald-400 to-sky-400"></div>
+                    <div class="space-y-0.5">
+                      <p class="text-slate-50 text-sm font-medium">Designing Interfaces</p>
+                      <p class="text-slate-400 text-[11px]">Interaction • UX • Systems</p>
+                    </div>
+                  </div>
+                  <span class="text-[11px] text-emerald-300 font-medium">In stock</span>
+                </div>
+
+                <div class="flex items-center justify-between rounded-2xl bg-slate-800/60 px-3 py-3">
+                  <div class="flex items-center gap-3">
+                    <div class="h-10 w-8 rounded-md bg-gradient-to-br from-sky-400 to-indigo-500"></div>
+                    <div class="space-y-0.5">
+                      <p class="text-slate-50 text-sm font-medium">Deep Work</p>
+                      <p class="text-slate-400 text-[11px]">Productivity • Focus</p>
+                    </div>
+                  </div>
+                  <span class="text-[11px] text-amber-300 font-medium">Due soon</span>
+                </div>
+
+                <div class="flex items-center justify-between rounded-2xl bg-slate-800/50 px-3 py-3">
+                  <div class="flex items-center gap-3">
+                    <div class="h-10 w-8 rounded-md bg-gradient-to-br from-pink-400 to-violet-500"></div>
+                    <div class="space-y-0.5">
+                      <p class="text-slate-50 text-sm font-medium">Atomic Habits</p>
+                      <p class="text-slate-400 text-[11px]">Self‑growth • Habits</p>
+                    </div>
+                  </div>
+                  <span class="text-[11px] text-rose-300 font-medium">Reserved</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-3xl bg-slate-900/60 border border-slate-700/70 shadow-xl p-4 flex items-center justify-between">
+              <div class="space-y-1">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-[0.18em]">
+                  Your reading stats
+                </p>
+                <p class="text-sm text-slate-100">Finish 3 more books to reach your goal.</p>
+              </div>
+              <div class="flex flex-col items-end text-right text-xs text-slate-300">
+                <span>42 books borrowed</span>
+                <span class="text-emerald-300 font-medium">87% on‑time returns</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Features Section -->
-<section class="py-20 bg-gradient-to-b from-slate-50 to-blue-50">
+<section class="py-16 md:py-20 bg-gradient-to-b from-slate-50 to-slate-100">
   <div class="max-w-6xl mx-auto px-6">
     <div class="text-center mb-12">
-      <h2 class="text-4xl font-bold text-slate-900 mb-4">
-        Why Choose Our Library?
+      <h2 class="text-3xl md:text-4xl font-semibold text-slate-900 mb-3">
+        Everything you expect from a modern e‑commerce library.
       </h2>
-      <p class="text-slate-600 text-lg">
-        Everything you need for your reading journey
+      <p class="text-slate-600 text-base md:text-lg max-w-2xl mx-auto">
+        Built with a clean, minimal interface so readers, students and admins can stay focused on
+        what matters: great books.
       </p>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Feature 1 -->
-      <div class="group bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-blue-100">
-        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-          <span class="text-3xl">🔍</span>
+      <div
+        class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all border border-slate-200">
+        <div
+          class="w-12 h-12 bg-gradient-to-br from-emerald-400 to-sky-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition">
+          <span class="text-2xl">🔍</span>
         </div>
-        <h3 class="text-xl font-bold mb-3 text-slate-800">Smart Search</h3>
-        <p class="text-slate-600">Find any book instantly with our powerful AI-powered search engine</p>
+        <h3 class="text-lg font-semibold mb-2 text-slate-900">Smart search & filters</h3>
+        <p class="text-sm text-slate-600">
+          Quickly find titles by category, author or ISBN, just like a premium bookshop.
+        </p>
       </div>
 
       <!-- Feature 2 -->
-      <div class="group bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-blue-100">
-        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-          <span class="text-3xl">📚</span>
+      <div
+        class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all border border-slate-200">
+        <div
+          class="w-12 h-12 bg-gradient-to-br from-sky-500 to-indigo-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition">
+          <span class="text-2xl">📚</span>
         </div>
-        <h3 class="text-xl font-bold mb-3 text-slate-800">Track Reading</h3>
-        <p class="text-slate-600">Keep track of all your borrowed books and reading progress</p>
+        <h3 class="text-lg font-semibold mb-2 text-slate-900">Live inventory insights</h3>
+        <p class="text-sm text-slate-600">
+          See what is available, reserved or due back at a glance.
+        </p>
       </div>
 
       <!-- Feature 3 -->
-      <div class="group bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-blue-100">
-        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-          <span class="text-3xl">⭐</span>
+      <div
+        class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all border border-slate-200">
+        <div
+          class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition">
+          <span class="text-2xl">⭐</span>
         </div>
-        <h3 class="text-xl font-bold mb-3 text-slate-800">Personal Wishlist</h3>
-        <p class="text-slate-600">Create and manage your personal reading wishlist effortlessly</p>
+        <h3 class="text-lg font-semibold mb-2 text-slate-900">Favourites & wishlists</h3>
+        <p class="text-sm text-slate-600">
+          Let users save books they love and plan their next reads.
+        </p>
       </div>
 
       <!-- Feature 4 -->
-      <div class="group bg-white/80 backdrop-blur-xl p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-blue-100">
-        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-          <span class="text-3xl">✨</span>
+      <div
+        class="group bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all border border-slate-200">
+        <div
+          class="w-12 h-12 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition">
+          <span class="text-2xl">✨</span>
         </div>
-        <h3 class="text-xl font-bold mb-3 text-slate-800">Modern Interface</h3>
-        <p class="text-slate-600">Enjoy a beautiful, intuitive interface designed for you</p>
+        <h3 class="text-lg font-semibold mb-2 text-slate-900">Polished admin tools</h3>
+        <p class="text-sm text-slate-600">
+          Manage books, users and loans from the sleek admin dashboard you already saw.
+        </p>
       </div>
     </div>
   </div>
 </section>
-
 

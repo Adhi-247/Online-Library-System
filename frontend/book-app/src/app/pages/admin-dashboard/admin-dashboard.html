@@ -1,91 +1,536 @@
-<main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex">
+<main class="min-h-screen bg-slate-100">
+  <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex gap-6">
 
-  <!-- Sidebar -->
-  <aside class="w-64 mr-8" id="admin-sidebar">
-    <nav class="bg-white rounded-xl shadow-lg p-6 flex flex-col gap-4">
-      <button class="admin-tab-btn" [class.active]="activeTab === 'dashboard'" (click)="activeTab = 'dashboard'">Dashboard</button>
-      <button class="admin-tab-btn" [class.active]="activeTab === 'books'" (click)="activeTab = 'books'">Books</button>
-      <button class="admin-tab-btn" [class.active]="activeTab === 'users'" (click)="activeTab = 'users'">Users</button>
-      <button class="admin-tab-btn" [class.active]="activeTab === 'categories'" (click)="activeTab = 'categories'">Categories</button>
-      <button class="admin-tab-btn" [class.active]="activeTab === 'loans'" (click)="activeTab = 'loans'">Loans</button>
-    </nav>
-  </aside>
+    <!-- Sidebar -->
+    <aside class="hidden md:flex md:w-64" id="admin-sidebar">
+      <nav
+        class="bg-slate-900 text-slate-100 rounded-3xl shadow-xl p-6 flex flex-col gap-6 w-full border border-slate-800/60">
+        <div>
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Admin</p>
+          <h1 class="mt-2 text-xl font-semibold tracking-tight">Library Control</h1>
+        </div>
 
-  <!-- Main Content Area -->
-  <section class="flex-1">
+        <div class="h-px bg-slate-800/80"></div>
 
-    <!-- Books Tab -->
-    <div *ngIf="!isLoading && activeTab === 'books'">
-      <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-        <span>📚</span> Manage Books
-      </h2>
+        <div class="flex flex-col gap-2 text-sm">
+          <button
+            class="flex items-center justify-between rounded-xl px-3 py-2 transition-all"
+            [ngClass]="activeTab === 'dashboard'
+              ? 'bg-slate-800 text-slate-50 shadow-sm'
+              : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-50'"
+            (click)="activeTab = 'dashboard'">
+            <span class="inline-flex items-center gap-2">
+              <span class="text-lg">📊</span>
+              <span>Overview</span>
+            </span>
+            <span class="text-[10px] uppercase tracking-[0.18em] text-slate-400">Summary</span>
+          </button>
 
-            <!-- Add Book Form -->
-            <form *ngIf="!editingBook" (ngSubmit)="addBook()" #bookForm="ngForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-         <input class="border p-2 rounded" name="title" [(ngModel)]="newBook.title" placeholder="Title" required />
-         <input class="border p-2 rounded" name="author" [(ngModel)]="newBook.author" placeholder="Author" required />
-         <input class="border p-2 rounded" name="isbn" [(ngModel)]="newBook.isbn" placeholder="ISBN" />
-         <input class="border p-2 rounded" name="coverImage" [(ngModel)]="newBook.coverImage" placeholder="Cover Image URL" />
-         <input class="border p-2 rounded" name="pages" type="number" [(ngModel)]="newBook.pages" placeholder="Pages" />
-         <input class="border p-2 rounded" name="available" type="number" [(ngModel)]="newBook.available" placeholder="Available Copies" />
-         <select class="border p-2 rounded" name="categoryId" [(ngModel)]="newBook.categoryId">
-           <option [ngValue]="null">Select Category</option>
-           <option *ngFor="let cat of categories" [ngValue]="cat.id">{{cat.name}}</option>
-         </select>
-         <button type="submit" class="col-span-1 md:col-span-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2 font-semibold">Add Book</button>
-            </form>
+          <button
+            class="flex items-center justify-between rounded-xl px-3 py-2 transition-all"
+            [ngClass]="activeTab === 'books'
+              ? 'bg-slate-800 text-slate-50 shadow-sm'
+              : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-50'"
+            (click)="activeTab = 'books'">
+            <span class="inline-flex items-center gap-2">
+              <span class="text-lg">📚</span>
+              <span>Books</span>
+            </span>
+            <span class="text-[10px] uppercase tracking-[0.18em] text-slate-400">Inventory</span>
+          </button>
 
-            <!-- Edit Book Form -->
-            <form *ngIf="editingBook" (ngSubmit)="updateBook()" #editBookForm="ngForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-         <input class="border p-2 rounded" name="title" [(ngModel)]="editingBook.title" placeholder="Title" required />
-         <input class="border p-2 rounded" name="author" [(ngModel)]="editingBook.author" placeholder="Author" required />
-         <input class="border p-2 rounded" name="isbn" [(ngModel)]="editingBook.isbn" placeholder="ISBN" />
-         <input class="border p-2 rounded" name="coverImage" [(ngModel)]="editingBook.coverImage" placeholder="Cover Image URL" />
-         <input class="border p-2 rounded" name="pages" type="number" [(ngModel)]="editingBook.pages" placeholder="Pages" />
-         <input class="border p-2 rounded" name="available" type="number" [(ngModel)]="editingBook.available" placeholder="Available Copies" />
-         <select class="border p-2 rounded" name="categoryId" [(ngModel)]="editingBook.categoryId">
-           <option [ngValue]="null">Select Category</option>
-           <option *ngFor="let cat of categories" [ngValue]="cat.id">{{cat.name}}</option>
-         </select>
-         <button type="submit" class="col-span-1 md:col-span-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2 font-semibold">Update Book</button>
-         <button type="button" (click)="cancelEdit()" class="col-span-1 md:col-span-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg py-2 font-semibold mt-2">Cancel</button>
-            </form>
+          <button
+            class="flex items-center justify-between rounded-xl px-3 py-2 transition-all"
+            [ngClass]="activeTab === 'users'
+              ? 'bg-slate-800 text-slate-50 shadow-sm'
+              : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-50'"
+            (click)="activeTab = 'users'">
+            <span class="inline-flex items-center gap-2">
+              <span class="text-lg">👤</span>
+              <span>Users</span>
+            </span>
+            <span class="text-[10px] uppercase tracking-[0.18em] text-slate-400">Members</span>
+          </button>
 
-      <!-- Table -->
-      <div class="overflow-x-auto">
-        <table class="min-w-full bg-white border rounded-xl">
-          <thead>
-            <tr>
-              <th class="py-2 px-4 border-b">Title</th>
-              <th class="py-2 px-4 border-b">Author</th>
-              <th class="py-2 px-4 border-b">Category</th>
-              <th class="py-2 px-4 border-b">Available</th>
-              <th class="py-2 px-4 border-b">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let book of books">
-              <td class="py-2 px-4 border-b">{{book.title}}</td>
-              <td class="py-2 px-4 border-b">{{book.author}}</td>
-              <td class="py-2 px-4 border-b">{{book.category?.name || 'Uncategorized'}}</td>
-              <td class="py-2 px-4 border-b">{{book.available}}</td>
-              <td class="py-2 px-4 border-b">
-                <button (click)="editBook(book)"
-                        class="bg-yellow-400 hover:bg-yellow-500 text-white rounded px-3 py-1 mr-2">
-                  Edit
-                </button>
-                <button (click)="deleteBook(book.id)"
-                        class="bg-red-500 hover:bg-red-600 text-white rounded px-3 py-1">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <button
+            class="flex items-center justify-between rounded-xl px-3 py-2 transition-all"
+            [ngClass]="activeTab === 'categories'
+              ? 'bg-slate-800 text-slate-50 shadow-sm'
+              : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-50'"
+            (click)="activeTab = 'categories'">
+            <span class="inline-flex items-center gap-2">
+              <span class="text-lg">🏷️</span>
+              <span>Categories</span>
+            </span>
+            <span class="text-[10px] uppercase tracking-[0.18em] text-slate-400">Taxonomy</span>
+          </button>
+
+          <button
+            class="flex items-center justify-between rounded-xl px-3 py-2 transition-all"
+            [ngClass]="activeTab === 'loans'
+              ? 'bg-slate-800 text-slate-50 shadow-sm'
+              : 'text-slate-300 hover:bg-slate-800/70 hover:text-slate-50'"
+            (click)="activeTab = 'loans'">
+            <span class="inline-flex items-center gap-2">
+              <span class="text-lg">📦</span>
+              <span>Loans</span>
+            </span>
+            <span class="text-[10px] uppercase tracking-[0.18em] text-slate-400">Activity</span>
+          </button>
+        </div>
+
+        <div class="mt-auto pt-4 border-t border-slate-800/70 flex flex-col gap-3 text-xs text-slate-400">
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div
+                class="h-9 w-9 rounded-full bg-gradient-to-br from-emerald-400/80 to-sky-400/90 flex items-center justify-center text-slate-950 font-semibold text-xs">
+                {{ admin?.fullName?.[0] || admin?.email?.[0] || 'A' }}
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xs font-medium text-slate-100 truncate max-w-[7rem]">
+                  {{ admin?.fullName || admin?.email || 'Admin' }}
+                </span>
+                <span class="text-[10px] uppercase tracking-[0.18em] text-emerald-300/80">
+                  Super admin
+                </span>
+              </div>
+            </div>
+            <button
+              (click)="logout()"
+              class="inline-flex items-center gap-1 rounded-full border border-slate-700 px-3 py-1 text-[10px] font-medium text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors">
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <section class="flex-1 flex flex-col gap-6">
+      <!-- Top bar (for mobile + page title) -->
+      <header class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="text-xs font-medium uppercase tracking-[0.18em] text-slate-500 mb-1">
+            Admin dashboard
+          </p>
+          <h2 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900">
+            Library e‑commerce overview
+          </h2>
+          <p class="mt-1 text-sm text-slate-500 max-w-xl">
+            Monitor inventory, users and active loans for your online bookstore in one clean view.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3 self-start md:self-auto">
+          <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-slate-200 shadow-sm">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="text-xs font-medium text-slate-600">System healthy</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- KPI cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" *ngIf="!isLoading && activeTab === 'dashboard'">
+        <div
+          class="relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm p-4 flex flex-col gap-3">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <p class="text-xs font-medium text-slate-500">Total books</p>
+              <p class="mt-1 text-2xl font-semibold text-slate-900">{{ stats.totalBooks }}</p>
+            </div>
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-emerald-500 text-lg">
+              📚
+            </span>
+          </div>
+          <p class="text-[11px] text-emerald-600 font-medium">
+            +12 new titles this week
+          </p>
+        </div>
+
+        <div
+          class="relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm p-4 flex flex-col gap-3">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <p class="text-xs font-medium text-slate-500">Registered users</p>
+              <p class="mt-1 text-2xl font-semibold text-slate-900">{{ stats.totalUsers }}</p>
+            </div>
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sky-50 text-sky-500 text-lg">
+              👤
+            </span>
+          </div>
+          <p class="text-[11px] text-sky-600 font-medium">
+            68% returning customers
+          </p>
+        </div>
+
+        <div
+          class="relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm p-4 flex flex-col gap-3">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <p class="text-xs font-medium text-slate-500">Categories</p>
+              <p class="mt-1 text-2xl font-semibold text-slate-900">{{ stats.totalCategories }}</p>
+            </div>
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-50 text-amber-500 text-lg">
+              🏷️
+            </span>
+          </div>
+          <p class="text-[11px] text-amber-600 font-medium">
+            Curated collections for discovery
+          </p>
+        </div>
+
+        <div
+          class="relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm p-4 flex flex-col gap-3">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <p class="text-xs font-medium text-slate-500">Active loans</p>
+              <p class="mt-1 text-2xl font-semibold text-slate-900">{{ stats.activeLoans }}</p>
+            </div>
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-violet-50 text-violet-500 text-lg">
+              📦
+            </span>
+          </div>
+          <p class="text-[11px] text-violet-600 font-medium">
+            Track due dates in real time
+          </p>
+        </div>
       </div>
 
-    </div>
+      <!-- Simple "trend" panel on dashboard -->
+      <div
+        *ngIf="!isLoading && activeTab === 'dashboard'"
+        class="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.2fr)] gap-4">
+        <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-4 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-[0.18em]">Inventory pulse</p>
+              <p class="mt-1 text-sm text-slate-500">
+                Snapshot of recent stock changes across your best‑selling categories.
+              </p>
+            </div>
+            <span class="inline-flex rounded-full bg-slate-100 px-2 py-1 text-[10px] font-medium text-slate-600">
+              Last 7 days
+            </span>
+          </div>
+          <div
+            class="mt-2 h-40 rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center text-xs text-slate-200 border border-slate-700/60">
+            <span class="opacity-80">
+              Add a chart component here later (e.g. revenue, orders, or loans over time).
+            </span>
+          </div>
+        </div>
 
-  </section>
+        <div class="rounded-2xl bg-white border border-slate-200 shadow-sm p-4 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-[0.18em]">Quick actions</p>
+          </div>
 
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <button
+              class="flex flex-col items-start gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-left text-slate-700 hover:border-slate-300 hover:bg-slate-100 transition-colors"
+              (click)="activeTab = 'books'">
+              <span class="text-lg">➕</span>
+              <span class="font-medium">Add new book</span>
+              <span class="text-[11px] text-slate-500">Create a title, set stock and assign a category.</span>
+            </button>
+
+            <button
+              class="flex flex-col items-start gap-1 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 text-left text-slate-700 hover:border-slate-300 hover:bg-slate-100 transition-colors"
+              (click)="activeTab = 'users'">
+              <span class="text-lg">👥</span>
+              <span class="font-medium">View customers</span>
+              <span class="text-[11px] text-slate-500">Review recent signups and top readers.</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Books Tab -->
+      <div *ngIf="!isLoading && activeTab === 'books'" class="flex flex-col gap-5">
+        <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-slate-900 flex items-center gap-2">
+              <span class="text-2xl">📚</span>
+              <span>Books inventory</span>
+            </h2>
+            <p class="text-sm text-slate-500">
+              Add, edit and organise the titles available in your online library store.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-500">
+            <span class="rounded-full bg-emerald-50 text-emerald-700 px-2 py-1 font-medium">
+              {{ books?.length || 0 }} items
+            </span>
+          </div>
+        </div>
+
+        <!-- Add Book / Edit Book Form Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-[0.18em]">
+                {{ editingBook ? 'Edit book' : 'Create new book' }}
+              </p>
+              <p class="mt-1 text-sm text-slate-500">
+                {{ editingBook ? 'Update details and inventory information for this title.' :
+                'Provide all the details for the new title you are adding.' }}
+              </p>
+            </div>
+            <span
+              class="ml-4 inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-slate-50 text-base">
+              {{ editingBook ? '✏️' : '➕' }}
+            </span>
+          </div>
+
+          <!-- Add Book Form -->
+          <form
+            *ngIf="!editingBook"
+            (ngSubmit)="addBook()"
+            #bookForm="ngForm"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="title"
+              [(ngModel)]="newBook.title"
+              placeholder="Title"
+              required />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="author"
+              [(ngModel)]="newBook.author"
+              placeholder="Author"
+              required />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="isbn"
+              [(ngModel)]="newBook.isbn"
+              placeholder="ISBN (optional)" />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="coverImage"
+              [(ngModel)]="newBook.coverImage"
+              placeholder="Cover image URL" />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="pages"
+              type="number"
+              [(ngModel)]="newBook.pages"
+              placeholder="Pages" />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="available"
+              type="number"
+              [(ngModel)]="newBook.available"
+              placeholder="Available copies" />
+            <select
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="categoryId"
+              [(ngModel)]="newBook.categoryId">
+              <option [ngValue]="null">Select category</option>
+              <option *ngFor="let cat of categories" [ngValue]="cat.id">
+                {{ cat.name }}
+              </option>
+            </select>
+            <div class="md:col-span-2 lg:col-span-3 flex justify-end">
+              <button
+                type="submit"
+                class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-slate-50 shadow-sm hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900/0 transition-colors disabled:opacity-60"
+                [disabled]="bookForm.invalid">
+                Save book
+              </button>
+            </div>
+          </form>
+
+          <!-- Edit Book Form -->
+          <form
+            *ngIf="editingBook"
+            (ngSubmit)="updateBook()"
+            #editBookForm="ngForm"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="title"
+              [(ngModel)]="editingBook.title"
+              placeholder="Title"
+              required />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="author"
+              [(ngModel)]="editingBook.author"
+              placeholder="Author"
+              required />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="isbn"
+              [(ngModel)]="editingBook.isbn"
+              placeholder="ISBN (optional)" />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="coverImage"
+              [(ngModel)]="editingBook.coverImage"
+              placeholder="Cover image URL" />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="pages"
+              type="number"
+              [(ngModel)]="editingBook.pages"
+              placeholder="Pages" />
+            <input
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="available"
+              type="number"
+              [(ngModel)]="editingBook.available"
+              placeholder="Available copies" />
+            <select
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+              name="categoryId"
+              [(ngModel)]="editingBook.categoryId">
+              <option [ngValue]="null">Select category</option>
+              <option *ngFor="let cat of categories" [ngValue]="cat.id">
+                {{ cat.name }}
+              </option>
+            </select>
+            <div class="md:col-span-2 lg:col-span-3 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                (click)="cancelEdit()"
+                class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 focus-visible:ring-offset-1 transition-colors">
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-slate-50 shadow-sm hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 focus-visible:ring-offset-slate-900/0 transition-colors">
+                Update book
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Books Table Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-slate-200">
+            <div>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-[0.18em]">Books list</p>
+              <p class="mt-1 text-xs text-slate-500">Quickly scan and manage the titles in your collection.</p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-left text-sm">
+              <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                <tr>
+                  <th class="py-3 px-5">Title</th>
+                  <th class="py-3 px-5">Author</th>
+                  <th class="py-3 px-5 hidden sm:table-cell">Category</th>
+                  <th class="py-3 px-5">Available</th>
+                  <th class="py-3 px-5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let book of books; let i = index"
+                  class="border-t border-slate-100 hover:bg-slate-50/80 transition-colors">
+                  <td class="py-3 px-5 align-top">
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-sm font-medium text-slate-900">
+                        {{ book.title }}
+                      </span>
+                      <span class="text-[11px] text-slate-500 line-clamp-1">
+                        {{ book.isbn || 'No ISBN' }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="py-3 px-5 align-top text-sm text-slate-700">
+                    {{ book.author }}
+                  </td>
+                  <td class="py-3 px-5 align-top hidden sm:table-cell">
+                    <span
+                      class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-700">
+                      {{ book.category?.name || 'Uncategorized' }}
+                    </span>
+                  </td>
+                  <td class="py-3 px-5 align-top text-sm">
+                    <span
+                      class="inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium"
+                      [ngClass]="book.available > 0
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                        : 'border-rose-200 bg-rose-50 text-rose-700'">
+                      {{ book.available }} in stock
+                    </span>
+                  </td>
+                  <td class="py-3 px-5 align-top">
+                    <div class="flex items-center justify-end gap-2">
+                      <button
+                        (click)="editBook(book)"
+                        class="inline-flex items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-[11px] font-medium text-amber-800 hover:bg-amber-100 transition-colors">
+                        Edit
+                      </button>
+                      <button
+                        (click)="deleteBook(book.id)"
+                        class="inline-flex items-center justify-center rounded-full border border-rose-200 bg-rose-50 px-3 py-1.5 text-[11px] font-medium text-rose-800 hover:bg-rose-100 transition-colors">
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr *ngIf="books?.length === 0">
+                  <td colspan="5" class="py-8 px-5 text-center text-sm text-slate-500">
+                    No books found yet. Use the form above to create your first title.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Placeholder content for other tabs -->
+      <div *ngIf="!isLoading && activeTab === 'users'" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-xl font-semibold text-slate-900 mb-2 flex items-center gap-2">
+          <span class="text-2xl">👤</span>
+          <span>Users & customers</span>
+        </h2>
+        <p class="text-sm text-slate-500 mb-4">
+          This section will list all registered users, their activity and purchase behaviour.
+        </p>
+        <div
+          class="mt-2 h-40 rounded-xl border border-dashed border-slate-300 bg-slate-50 flex items-center justify-center text-xs text-slate-500">
+          Hook this panel up to your users API to complete the experience.
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && activeTab === 'categories'" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-xl font-semibold text-slate-900 mb-2 flex items-center gap-2">
+          <span class="text-2xl">🏷️</span>
+          <span>Categories</span>
+        </h2>
+        <p class="text-sm text-slate-500 mb-4">
+          Create, rename and curate categories to keep your catalogue easy to browse.
+        </p>
+        <div
+          class="mt-2 h-40 rounded-xl border border-dashed border-slate-300 bg-slate-50 flex items-center justify-center text-xs text-slate-500">
+          Plug in your categories service here to manage taxonomy.
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && activeTab === 'loans'" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-xl font-semibold text-slate-900 mb-2 flex items-center gap-2">
+          <span class="text-2xl">📦</span>
+          <span>Loans & orders</span>
+        </h2>
+        <p class="text-sm text-slate-500 mb-4">
+          Track which books are currently checked out, due soon or overdue.
+        </p>
+        <div
+          class="mt-2 h-40 rounded-xl border border-dashed border-slate-300 bg-slate-50 flex items-center justify-center text-xs text-slate-500">
+          Connect this view to your loans or orders API to get real‑time activity.
+        </div>
+      </div>
+    </section>
+  </div>
 </main>

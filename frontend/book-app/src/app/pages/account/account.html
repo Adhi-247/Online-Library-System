@@ -1,0 +1,190 @@
+<main class="min-h-[calc(100vh-4rem)] bg-slate-950 py-10 px-4">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <!-- Header -->
+    <header class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="space-y-2">
+        <p class="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-500">
+          Profile & settings
+        </p>
+        <h1 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-50">
+          Account for {{ user?.fullName || user?.email || 'Member' }}.
+        </h1>
+        <p class="text-sm text-slate-400 max-w-xl">
+          Manage your basic profile information and how the library keeps in touch with you.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 self-start md:self-auto">
+        <div
+          class="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 via-sky-400 to-cyan-400 flex items-center justify-center text-slate-950 text-lg font-semibold">
+          {{ user?.fullName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U' }}
+        </div>
+        <div class="flex flex-col leading-tight">
+          <span class="text-sm text-slate-100">
+            {{ user?.fullName || 'Library member' }}
+          </span>
+          <span class="text-[11px] text-slate-400">
+            {{ user?.email || 'No email on record' }}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-1 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6">
+      <!-- Left: basic info -->
+      <div class="space-y-4">
+        <div class="rounded-2xl bg-slate-900/80 border border-slate-800 p-5 space-y-4">
+          <h2 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
+            <span class="text-lg">👤</span>
+            <span>Profile information</span>
+          </h2>
+
+          <div class="space-y-3 text-sm">
+            <div>
+              <p class="text-[11px] text-slate-500 uppercase tracking-[0.18em] mb-1">
+                Full name
+              </p>
+              <p class="text-slate-100">
+                {{ user?.fullName || 'Not set' }}
+              </p>
+            </div>
+
+            <div>
+              <p class="text-[11px] text-slate-500 uppercase tracking-[0.18em] mb-1">
+                Email address
+              </p>
+              <p class="text-slate-100">
+                {{ user?.email || 'Not set' }}
+              </p>
+            </div>
+
+            <div>
+              <p class="text-[11px] text-slate-500 uppercase tracking-[0.18em] mb-1">
+                Role
+              </p>
+              <p class="text-slate-100">
+                {{ user?.role || 'Member' }}
+              </p>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-500">
+            Profile editing can be implemented later (e.g. update name or avatar).
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: preferences -->
+      <div class="space-y-4">
+        <form
+          (ngSubmit)="saveSettings()"
+          class="rounded-2xl bg-slate-900/80 border border-slate-800 p-5 space-y-4">
+          <h2 class="text-sm font-semibold text-slate-100 flex items-center gap-2">
+            <span class="text-lg">⚙️</span>
+            <span>Preferences</span>
+          </h2>
+
+          <div class="space-y-3 text-xs sm:text-sm">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                [(ngModel)]="preferences.emailNotifications"
+                name="emailNotifications"
+                class="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-emerald-400 focus:ring-emerald-500" />
+              <span>
+                <span class="block text-slate-100">General email updates</span>
+                <span class="text-slate-500 text-[11px]">
+                  Occasional updates about new features or changes to the library.
+                </span>
+              </span>
+            </label>
+
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                [(ngModel)]="preferences.dueDateReminders"
+                name="dueDateReminders"
+                class="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-emerald-400 focus:ring-emerald-500" />
+              <span>
+                <span class="block text-slate-100">Due date reminders</span>
+                <span class="text-slate-500 text-[11px]">
+                  Friendly reminders when borrowed books are close to their return date.
+                </span>
+              </span>
+            </label>
+
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                [(ngModel)]="preferences.marketingEmails"
+                name="marketingEmails"
+                class="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-emerald-400 focus:ring-emerald-500" />
+              <span>
+                <span class="block text-slate-100">Recommendations & promotions</span>
+                <span class="text-slate-500 text-[11px]">
+                  Occasional curated reading suggestions and featured collections.
+                </span>
+              </span>
+            </label>
+          </div>
+
+          <div class="space-y-3 text-xs sm:text-sm">
+            <div>
+              <label class="block text-[11px] text-slate-500 uppercase tracking-[0.18em] mb-1">
+                Default category
+              </label>
+              <select
+                [(ngModel)]="preferences.defaultCategory"
+                name="defaultCategory"
+                class="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs sm:text-sm text-slate-100 focus:border-slate-500 focus:outline-none">
+                <option value="All">All categories</option>
+                <option value="Fiction">Fiction</option>
+                <option value="Science">Science</option>
+                <option value="History">History</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] text-slate-500 uppercase tracking-[0.18em] mb-1">
+                Theme
+              </label>
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  (click)="preferences.theme = 'dark'"
+                  class="flex-1 rounded-xl border px-3 py-2 text-xs sm:text-sm"
+                  [ngClass]="
+                    preferences.theme === 'dark'
+                      ? 'border-emerald-500/60 bg-emerald-500/10 text-emerald-200'
+                      : 'border-slate-800 bg-slate-950 text-slate-300'
+                  ">
+                  Dark
+                </button>
+                <button
+                  type="button"
+                  (click)="preferences.theme = 'light'"
+                  class="flex-1 rounded-xl border px-3 py-2 text-xs sm:text-sm"
+                  [ngClass]="
+                    preferences.theme === 'light'
+                      ? 'border-emerald-500/60 bg-emerald-500/10 text-emerald-200'
+                      : 'border-slate-800 bg-slate-950 text-slate-300'
+                  ">
+                  Light
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2 flex justify-end">
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center rounded-full bg-slate-50 px-5 py-2 text-xs sm:text-sm font-medium text-slate-950 shadow hover:bg-emerald-300 hover:text-slate-950 hover:-translate-y-0.5 transition">
+              Save preferences
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</main>
+
