@@ -1,6 +1,5 @@
 using backend.Models;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Services
 {
@@ -13,15 +12,15 @@ namespace backend.Services
             _context = context;
         }
 
-        public async Task<User> AuthenticateAsync(string username, string password)
+        public async Task<User?> AuthenticateAsync(string email, string password)
         {
-            return _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
         }
 
         public async Task<User> RegisterAsync(User user)
         {
             _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return user;
         }
     }
